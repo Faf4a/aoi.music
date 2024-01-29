@@ -218,11 +218,14 @@ export async function requestInfo<T extends keyof typeof PlatformType>(
     let data: any;
 
     try {
-      if (spotApi) data = await spotApi.searchTracks(id, { limit: 1 });
-      
-      console.log("Data : " + JSON.stringify(data))
-      console.log("Tracks : " + JSON.stringify(data?.body?.tracks))
-      data = await spotify.getData(data?.body?.tracks.items[0] ?? id);
+      if (spotApi) {
+        data = await spotApi.searchTracks(id, { limit: 1 })
+        data = data?.body.tracks?.items[0]?.external_urls?.spotify || "https://open.spotify.com/track/" + data?.body.tracks?.items[0]?.id;
+        if (!data) console.error("[@akarui/aoi.music]: Failed to find spotify data");
+      } else {
+        data = id;
+      }
+      data = await spotify.getData(data);
     } catch (e) {
       console.error("[@akarui/aoi.music]: Failed to request spotify data with reason:", e.message);
       return;
