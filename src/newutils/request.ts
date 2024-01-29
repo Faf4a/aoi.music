@@ -218,9 +218,10 @@ export async function requestInfo<T extends keyof typeof PlatformType>(
     let data: any;
 
     try {
-      if (spotApi)
-        data = await spotApi.searchTracks(id, { limit: 1 });
-
+      if (spotApi) data = await spotApi.searchTracks(id, { limit: 1 });
+      
+      console.log("Data : " + JSON.stringify(data))
+      console.log("Tracks : " + JSON.stringify(data?.body?.tracks))
       data = await spotify.getData(data?.body?.tracks.items[0] ?? id);
     } catch (e) {
       console.error("[@akarui/aoi.music]: Failed to request spotify data with reason:", e.message);
